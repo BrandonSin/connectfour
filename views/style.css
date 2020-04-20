@@ -1,0 +1,280 @@
+html, body {
+	height: 100%;
+	margin: 0;
+}
+body {
+	display: flex;
+	flex-direction: column;
+	
+
+}
+
+h3 {
+	color: white;
+	text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+}
+
+.topnav img {
+	width: 2vw;
+	height: 2vw;
+	border-radius: 10%;
+	overflow: hidden;
+	
+}
+
+.topnav {
+	overflow: hidden;
+	width: 80%;
+	margin: auto;
+}
+
+header{
+	background-color: #004dff;
+	padding-top: 10px;
+	min-height: 50px;
+	border-bottom: #ffee00 3px solid;
+	border-top: #ffee00 3px solid;
+
+}
+
+header a {
+	color: white;
+	text-decoration: none;
+	font-size: 20px;
+
+
+}
+
+header #topic{
+	text-align: center;
+}
+
+header #topic{
+	font: 30px Jazz LET, fantasy;
+	color: #ff0026;
+	text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+	
+}
+
+header #topic img{
+	margin: 0;
+}
+
+header .highlight{
+	color: #ffee00;
+	font-weight: bold;
+	text-shadow:
+		-2px -2px 0 #000,
+		2px -2px 0 #000,
+		-2px 2px 0 #000,
+		2px 2px 0 #000;
+}
+
+.online_box {
+	position: relative;
+	left: 10px;
+	bottom: -10px;
+	width: 20vw;
+	max-width: 200px;
+	max-height: 400px;
+	height: 40vw;
+	border: 2px solid  #ff0026;
+	box-sizing: border-box;
+	background-color: white;
+	display: inline-block;	
+
+	
+	
+  }
+
+.online_box u{
+	
+	float: left;
+	  
+}
+
+.online_box #userList{
+	list-style-type: none;
+	float: left;
+	width: 100%;
+	height: auto;
+	text-align: center;
+	overflow-wrap: break-word;
+}
+
+
+
+#banner .content{
+	overflow: hidden;
+	margin: auto;
+	min-height: 200px;
+	/* Transparenting background image */
+	background-color: rgba(246, 7, 234, 0.8) !important;
+	background:url(images/c4.jpg) no-repeat   2.5px -300px;
+	background-blend-mode: color;
+	border-bottom: #ffee00 5px solid;
+}
+#banner h1{
+	color: #ff6ea3;
+	text-align: center;
+	font-family: cursive;
+	margin-top: 150px;
+	margin-bottom: 20px;	
+	font-weight: bold;
+	text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+}
+.usernameDisplay{
+	width: 50%;
+
+	display: inline-block;
+}
+.usernameDisplay h3 {
+	text-align: center;
+
+}
+
+form {
+	position: relative;
+	left: 30%;
+}
+
+#users {
+	display: flex;
+	height: 100px;
+}
+
+.game {
+	position: relative;
+	left: 30%;
+}
+
+#game {
+    font-family: 'Open Sans', sans-serif;
+    color: #0044AA;
+    text-align: center;
+  }
+
+  #colorTurn {
+    font-size: 18px;
+  }
+  
+
+
+#grid {
+    margin: 20px auto;
+    display: table;
+    width: 415px;
+    height: 360px;
+    padding: 10px;
+    background: #0077EE;
+    border: 1px solid #0044AA;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+     border-spacing: 5px 5px;
+  }
+  
+  .row {
+    display: table-row;
+  }
+  
+  .cell {
+    display: table-cell;
+    background-color: #FFFFFF;
+    width: 50px;
+    height: 50px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    margin: 2px;
+  }
+
+
+
+table.center{
+	margin-left: auto;
+	margin-right: auto;
+}
+
+  .board_square {
+
+	border: 1px solid #0044AA;
+	height: 64px;
+	width: 64px;
+}
+
+
+
+.player1 {
+	background-color: yellow;
+}
+
+.player0 {
+	background-color: red; 
+}
+
+button {
+	border-radius: 50%;
+	font-size: 12px;
+	color: black;
+	cursor: pointer;
+	background-color: whitesmoke;
+	padding: 4px 8px;
+
+}
+#dark{
+	background-color: #000;
+	color: white;
+	font-size: 32px;
+	margin: 10px;
+	padding: 15px 32px;
+	border: 2px solid whitesmoke
+
+}
+
+#pink{
+	background-color: #ff6ea3;
+	color:white;
+	font-size: 32px;
+	margin: 10px;
+	padding: 15px 32px;
+	border: 2px solid cyan
+
+
+}
+
+#normal{
+	background-color: lightgreen;
+	color:white;
+	font-size: 32px;
+	padding: 15px 32px;
+	margin: 10px;
+
+
+}
+
+#return{
+	background-color: #ff6ea3;
+	color:white;
+	font-size: 20px;
+	margin: 10px;
+	padding: 8px 16px;
+	border: 2px solid cyan;
+	right: 50px;
+	position: absolute;
+	bottom: 5px;
+
+}

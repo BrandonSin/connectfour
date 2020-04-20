@@ -1,0 +1,15 @@
+Steps:
+
+1. download node.js and the command prompt
+2. File Index.ejs should be in the folder 'views' for the program to run
+	the file should already be in the folder.
+3. open node.js command prompt and cd into the main directory
+4. do npm install socket.io
+5. do npm install express
+6. do npm install ejs
+7. do node index.js in main directory
+8. go to http://localhost:8080/
+
+Note: Due to Cookies are being used, multiple tabs of the same game will be set to the same User therefore, possible
+errors may show up.
+

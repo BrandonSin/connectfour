@@ -1,0 +1,23 @@
+{
+  "name": "individual-project",
+  "version": "1.0.0",
+  "description": "A Basic Connect-four game",
+  "main": "index.js",
+  "scripts": {
+    "test": "1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "connect4"
+  ],
+  "author": "Brandon Sin",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}

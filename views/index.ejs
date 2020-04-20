@@ -1,0 +1,403 @@
+<!--Author: Brandon Sin 30012020
+Credit to Nick Ruffilo https://www.youtube.com/watch?v=4AIop6P-jHE&t= for the Connect Four Grid Design
+Used https://www.w3schools.com/js/js_cookies.asp for programming cookies
+Known Issue: A rare occasion where Client does not load properly, may need to restart server to reload page
+Version 1.1
+Date: 2020-04-20-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Connect Four</title>
+    
+    <link href = "style.css" rel ="stylesheet" type ="text/css">
+  
+    <script src="../../socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    
+</head>
+  <body>
+    <div id = "menu">
+    <header>
+      <div class ="topnav" id="TopNav">
+          <div id = "topic">
+              <h1><span class ="highlight">C</span>onnect <span class ="highlight">F</span>our</h1>
+    </header>
+    <section id = "banner">
+			<div class ="content" id = "myContent">	
+				
+      </div>
+    </section>
+    <section id = "users">
+    <div class = "online_box">
+      <u><strong>Connected Users</strong></u>
+      <p id = "userList">
+      </p>
+    </div>
+    <div class = "usernameDisplay">
+      <h3>Your username is: <span id="uname">...</span></h3>
+    </div>
+  </section>
+
+    <form action ="/" method = "POST" id ="usernameBox">
+      <input id ="txt" autocomplete = "off" autofocus = "on" placeholder="Change Username..."/><button>Change</button>
+    </form>
+
+    <div class = "game">
+      <h3>Create a New Game</h3>
+      <input type ="button" id ="newGame" onclick="createGame()" value="Create Game" style="border-radius: 50%;"></button>
+      <h3>Join an Existing Game with Room ID</h3>
+      <input type="text" name="room" id="IDroom" placeholder ="Enter Room ID" required>
+      <button id = "joinGame" onclick="grabID()">Join</button>
+      <h3>Join a Random Existing Game</h3>
+      <button id = "joinRandom" onclick="joinRandom()">Join</button>
+      <div id = "buttonTheme">
+        <button id="dark" onclick="colorChange(1);">Dark</button>
+        <button id="normal" onclick="colorChange(2);">Normal</button>
+        <button id="pink" onclick="colorChange(3);">Pink</button>
+      </div>
+    </div>
+  </div>
+  <div id = "game">
+    <H1>CONNECT FOUR</H1>
+    <p id="demo">players</p>
+    <p id="rID"></p>
+    <p id="turn"></p>
+    <!--Buttons for dropping pellets -->
+    <table id="game_table" class = "center">
+      <thead>
+        <tr> 
+          <td><button onclick="drop(0);">Drop</button></td>
+          <td><button onclick="drop(1);">Drop</button></td>
+          <td><button onclick="drop(2);">Drop</button></td>
+          <td><button onclick="drop(3);">Drop</button></td>
+          <td><button onclick="drop(4);">Drop</button></td>
+          <td><button onclick="drop(5);">Drop</button></td>
+          <td><button onclick="drop(6);">Drop</button></td>
+        </tr>
+      </thead>
+      <script>      
+      //creating the visual grid
+      for (var row=0; row<=5; row++) {
+      
+        document.writeln("<tr>");	
+        for (var col=0; col<=6; col++) {
+          
+          //need Id square for accessing Coordinates
+          document.writeln("<td id='square_" + row + "_"+ col +"' class='board_square'></td>");							
+        }
+        document.writeln("</tr>");	
+      }						             
+      </script>
+    </table>
+   
+    <!-- Buttons for setting Color themes-->
+    <p id="result"></p>
+    <div id = "buttonTheme">
+      <button id="dark" onclick="colorChange(1);">Dark</button>
+      <button id="normal" onclick="colorChange(2);">Normal</button>
+      <button id="pink" onclick="colorChange(3);">Pink</button>   
+    </div>
+    <!--Button for returning to home page-->
+    <button id="return" onclick="home()">Home</button>
+  </div>
+  </body>
+  <script>
+  
+  //initializing Global Variables
+    var key = null;
+    var playerTurn = false;
+    var grid = [];
+    var username;
+    var connectedToRoom = 0;
+    var changedName = "";
+
+    //connecting to localhost
+    var socket = io.connect('http://localhost:8080');
+    //user has connected to the server
+    console.log('Connected to server')
+    //printing username 
+    $("#uname").html(checkCookie());
+    //Background Color
+    document.body.style.backgroundColor = checkCookieColor(); 
+     
+  $('form').submit(function(e){
+    e.preventDefault(); //prevent page from reloading
+    console.log('User: ' + username);
+    var string = $('#txt').val();
+    
+    //if name is less than 0, prevent from changing username
+    if(string.length === 0){
+      alert("Name must have at least 1 character");
+      return false;
+    }
+    //emit name to server and clear textbox
+    else{
+      setCookie("username", string, 365);
+      socket.emit('name_change', string, username);
+      $('#txt').val('');
+      console.log("name changed to: " + string);
+      changedName = string;
+    }
+  })
+
+//grabs ID from the join room button and send to server
+//Stores Room ID as Key
+  function grabID(){
+    var stringID = document.getElementById("IDroom").value
+    console.log("Room ID: " + stringID);
+    key = stringID;
+    socket.emit("joinGame", stringID);
+  }
+
+//Function to Join random Lobby
+  function joinRandom(){
+    //send to server with arg username
+    socket.emit("joinRandom", username);
+    //listens if room is creatable 
+    socket.on("creatableRoom", function(){
+    //hide main menu and display game board
+    $('#menu').css('display', 'none');
+    $('#game').css('display', 'block');
+  })
+  }
+
+  //alert user if game ID does not exist
+  socket.on("alerts", function(msg){
+    alert(msg);
+  })
+
+  //Grab playerlist from server and display it in Game Lobby
+  socket.on("roomList", function(names){
+    var name1 = names[0];
+    var name2 = names[1];
+    document.getElementById("turn").innerHTML = "Player's Turn: " + name1;
+    document.getElementById("demo").innerHTML = name1 + " and " + name2;
+    console.log("players are:" + name1 +  " and " + name2);
+  })
+
+
+  //player 2 joins lobby
+  //Player2 retrieves Room ID and switches Main Menu to Game Board
+  socket.on("enterGame", function(color, ID){ 
+    console.log(ID);
+    $("#rID").html("Room ID: " +ID);
+    $('#menu').css('display', 'none');
+    $('#game').css('display', 'block');
+
+  })
+
+  //create Game click from player
+  //remove body and replaces with game board
+  var div = document.getElementById('menu');
+  $('#game').css('display','none');
+  function createGame() {  
+  //generate room ID
+  socket.emit('createRoom',username)
+  console.log("main page is removed and game is created");
+
+  //room is creatable 
+  socket.on("creatableRoom", function(){
+  //hide main menu and display game board
+  $('#menu').css('display', 'none');
+  $('#game').css('display', 'block');
+  })
+  }
+  //server sends key to client
+  //Key is displayed in Game Lobby
+  socket.on('key', function(ID){
+    key = ID;
+    
+    $("#rID").html("Room ID: " +key);
+
+//Notifying the Server to Start the Game
+  socket.emit("playerStart", key);
+  });
+
+
+//Function setCookie Takes in 3 args
+//cname is cookieName, Cvalue is the username, exdays is the expiry date 
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  var expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+//function getCookie takes 1 arg
+//cname is the CookieName
+//function takes the cookieName and splits the String into username
+//returns username else returns empty string if name does not exists
+function getCookie(cname) {
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+//Function CheckCookie takes no args
+//Function returns the username if username exists
+//Otherwise returns an auto-generated name
+//auto-gen code extracted from professor pavol's code
+function checkCookie(){
+  username = getCookie("username");
+  console.log(username);
+  if(username != ""){
+    socket.emit('theUsername', username);
+    return username;
+
+  }
+  else{
+    let parts = [];
+      parts.push( ["Small", "Big", "Fat", "Humongous", "Chubby", "Obtuse"] );
+      parts.push( ["Red", "Blue", "Green", "Black", "Pink", "White"] );
+      parts.push( ["Bear", "Dog", "Potato", "Tentacle", "Squid", "Pig"] );
+
+      for( part of parts) {
+        username += part[Math.floor(Math.random()*part.length)];
+      }
+      setCookie("username", username, 365)
+      //Sending username to server
+      socket.emit('theUsername', username);
+      return username;
+    
+  }
+}
+  
+//Retrieve Username from server and display on homepage
+  socket.on('the_user', function(user){
+    username = user;
+    $("#uname").html(username);
+    return username;
+  });
+
+//Retrieves the player's turn,
+//Current Turn is Player's Name
+//Checks if Current Turn is same as Player's name of Client thus allowing Player to Move
+  socket.on("playerTurn", function(currentTurn){
+    console.log("PlayerTurn Condition");
+    document.getElementById("turn").innerHTML = "Player's Turn: " + currentTurn;
+    if(currentTurn == username){
+      console.log("Current Turn is True");
+      playerTurn = true;
+     
+      
+    }
+
+  })
+
+//Function Drop() is initialized by buttons drop during gameplay
+//Function Drop() has 1 arg, colClicked
+//colClicked represents the index of which column was clicked
+//Sends the Room ID, player name and Index of Column to server
+  function drop(colClicked){
+    console.log("Column Clicked: " + colClicked);
+    console.log(username + " has made an action");
+    
+    if(playerTurn == true){
+      socket.emit("playerEnd", {key: key, col: colClicked, username: username}); 
+      console.log("PlayerTurn is True " + username);
+      console.log("Key: " + key + " colClicked: " + colClicked + " username: " + username);     
+    }
+  }
+
+//Retrieves An Object that contains Color, Column, Row and Username
+//Player's Name is associated with Color
+//Col and Row makes up the Coordinate that can display on the Grid using HTML
+//Sending to Server, "playerStart" with key which the server processes the Game State 
+  socket.on("gameBoardUpdate", function(boardUpdate){
+    var piece = boardUpdate.username;
+    var pieceCol = boardUpdate.col;
+    var pieceColor = boardUpdate.roomTurn;
+    var pieceRow = boardUpdate.row;
+    playerTurn = false;
+    console.log(boardUpdate);
+    var row = 5;
+    var cell = document.getElementById("square_" + pieceRow + "_" + pieceCol);
+    cell.classList.add("player" + pieceColor);
+    socket.emit("playerStart", key);
+  })
+
+  
+
+  //if player move is invalid alert msg
+  socket.on("generalError", function(msg){
+    alert(msg);
+  })
+
+  //Display winner
+  socket.on("winner", function(message){
+    document.getElementById("result").innerHTML = message + " has won!";
+
+  })
+
+  //display Draw
+  socket.on("draw", function(){
+    document.getElementById("result").innerHTML = "Game Draw!";
+  })
+
+
+  //userlist on main menu
+  socket.on("uList", function(list){
+    document.getElementById("userList").innerHTML = list;
+
+
+  })
+
+//function colorchange takes in 1 arg, theme
+//arg theme contains a number that is associated with the color of the background
+//colorChange() is to address the color change of the background theme
+  function colorChange(theme){
+    console.log(theme);
+    if(theme == "3"){
+      document.body.style.backgroundColor = "pink";
+      setCookie("color", "pink", 365);
+    }
+    if(theme == "1"){
+      document.body.style.backgroundColor = "black";
+      setCookie("color", "black", 365);
+    }
+    if(theme == "2"){
+      document.body.style.backgroundColor = "lightgreen";
+      setCookie("color", "lightgreen", 365);
+    }
+  }
+
+//function checkCookieColor takes in no args
+//Function checks if previous color is selected otherwise
+//it uses a default color "lightgreen"
+//returns corresponding color
+  function checkCookieColor() {
+    var backgroundColor = getCookie("color");
+    console.log(backgroundColor);
+    if (backgroundColor == "lightgreen" || backgroundColor == "") {
+      return "lightgreen";
+    }
+    else if (backgroundColor == "pink") {
+      return "pink";
+    } 
+    else {
+      return "black";
+    }
+  }
+
+  function home(){
+  $('#menu').css('display', 'block');
+  $('#game').css('display', 'none');
+
+  }
+    
+
+
+
+
+</script>
+</html>
