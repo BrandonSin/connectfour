@@ -11,6 +11,8 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+var port = process.env.PORT || 8080;
+
 
 //All connected users
 var userList = [];
@@ -366,7 +368,9 @@ function winner(player, board){
 
 
 
-var port = process.env.PORT || 8080;
-app.listen(port);
-console.log("Listening on port " + port);
+
+app.listen(port, function(){
+    console.log("Listening on port " + port);
+    );
+
 
