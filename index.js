@@ -105,7 +105,7 @@ function removeName(username){
     return userList
 }
 
-app.use(express.static(__dirname + '/views'));
+app.use(express.static('views'));
 app.get('/', function(req, res) {
     res.render('index.ejs');
 });
