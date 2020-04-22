@@ -107,7 +107,7 @@ function removeName(username){
 
 app.use(express.static('views'));
 app.get('/', function(req, res) {
-    res.render('index.ejs');
+    res.redirect('/index.ejs');
 });
  
 //Connection 
