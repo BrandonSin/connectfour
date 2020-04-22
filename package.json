@@ -4,20 +4,17 @@
   "description": "A Basic Connect-four game",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   
-  "repository": {
-    "type": "git",
-    "url": "none"
-  },
   "keywords": [
     "connect4"
   ],
   "author": "Brandon Sin",
   "license": "UNLICENSED",
   "dependencies": {
+    "cors": "^2.85",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
