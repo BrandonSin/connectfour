@@ -109,7 +109,7 @@ function removeName(username){
 app.use(cors());
 app.use(express.static('views'));
 app.get('/', function(req, res) {
-    res.redirect('/index.ejs');
+    res.render('/index.ejs');
 });
  
 //Connection 
