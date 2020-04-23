@@ -14,7 +14,7 @@
   "author": "Brandon Sin",
   "license": "UNLICENSED",
   "dependencies": {
-    "cors": "^2.85",
+    "cors": "^2.8.5",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
