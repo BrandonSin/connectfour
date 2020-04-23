@@ -106,7 +106,7 @@ function removeName(username){
     return userList
 }
 
-app.use(cors());
+
 app.use(express.static('/views'));
 app.get('/', function(req, res) {
     res.render('/index.ejs');
