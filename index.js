@@ -107,7 +107,7 @@ function removeName(username){
 }
 
 app.use(cors());
-app.use(express.static('views'));
+app.use(express.static('/views'));
 app.get('/', function(req, res) {
     res.render('/index.ejs');
 });
