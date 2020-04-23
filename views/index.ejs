@@ -111,9 +111,9 @@ Date: 2020-04-20-->
     var username;
     var connectedToRoom = 0;
     var changedName = "";
-
+    const endpoint = 'https://connect4-project.herokuapp.com/';
     //connecting to localhost
-    var socket = io.connect('https://connect4-project.herokuapp.com/');
+    var socket = io(endpoint);
     //user has connected to the server
     console.log('Connected to server')
     //printing username 
